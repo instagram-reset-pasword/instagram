@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,27 +17,35 @@
             display: flex;
             flex-direction: column;
             background-color: #ffffff;
+            align-items: center;
         }
 
-        /* En yukarıdaki logo kısmı */
+        /* En yukarıdaki logo kısmı - Tam merkezde */
         .top-header {
             width: 100%;
-            padding: 20px;
+            padding: 30px 20px;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center; /* Tam merkezleme */
         }
 
         .insta-logo-top {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
+            width: 28px;
+            height: 28px;
+        }
+
+        .separator {
+            margin: 0 8px;
+            font-size: 18px;
+            color: #262626;
+            font-weight: bold;
         }
 
         .insta-text {
-            font-size: 18px;
-            font-weight: 600;
-            color: #262626;
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: -0.5px;
         }
 
         /* Tam ortadaki yazı */
@@ -46,11 +54,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding-bottom: 50px; /* Bir az yuxarı qalxsın deyə */
         }
 
         .success-text {
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 800;
             color: #000;
         }
 
@@ -58,22 +67,22 @@
         .bottom-footer {
             width: 100%;
             padding: 20px;
-            padding-bottom: 40px; /* Telefonun alt hissəsindən bir az yuxarıda qalsın */
+            padding-bottom: 50px;
         }
 
         .open-app-btn {
             display: block;
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
             margin: 0 auto;
-            padding: 14px;
-            background-color: #0095f6;
+            padding: 16px;
+            background-color: #4cb5f9; /* Instagram butonu mavisi */
             color: #ffffff;
             text-align: center;
             text-decoration: none;
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -81,15 +90,16 @@
 
     <div class="top-header">
         <img class="insta-logo-top" src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram">
+        <span class="separator">•</span>
         <span class="insta-text">Instagram</span>
     </div>
 
     <div class="main-content">
-        <h1 class="success-text">şifre değiştirildi!</h1>
+        <h1 class="success-text">Şifre değiştirildi!</h1>
     </div>
 
     <div class="bottom-footer">
-        <a href="instagram://app" class="open-app-btn">uygulamayı aç</a>
+        <a href="instagram://app" class="open-app-btn">Uygulamayı aç</a>
     </div>
 
 </body>
